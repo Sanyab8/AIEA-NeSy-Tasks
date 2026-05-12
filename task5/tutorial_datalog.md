@@ -142,6 +142,5 @@ Limitations:
 
 Overall, Datalog is especially useful for graph traversal, relationship-heavy systems, recursive queries, and semi-structured data.
 
-```
 SlideShow: https://docs.google.com/presentation/d/15GvQZuiKycRkzZaF1VDLLawLbYMPmE8aObZxkpzS-LQ/edit?slide=id.g2576a45fa49_2_87#slide=id.g2576a45fa49_2_87
-```
+
