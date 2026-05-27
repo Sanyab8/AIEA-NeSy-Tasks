@@ -21,3 +21,4 @@ The query top10_list(legend_of_zelda). returned true, which matches the expected
 The symbolic solver is reliable once the rules are written correctly. The main challenge is translating natural language into the right predicates, constants, and rules. Small typos, like writing legend_of_zelds instead of legend_of_zelda, break the reasoning even when the logic idea is correct.
 
 7. GitHub repo
+https://github.com/Sanyab8/AIEA-NeSy-Tasks
