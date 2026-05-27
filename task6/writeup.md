@@ -1,24 +1,15 @@
 Title: Logic-LM Local Reimplementation Writeup
 
-1. Paper chosen
-I chose Logic-LM because it directly matches the goal of the LLM logic project: translating natural language reasoning problems into symbolic logic and using a solver to check the answer.
+For this task, I chose Logic-LM because it directly connects to the goal of the LLM logic project: translating natural language reasoning problems into symbolic logic and using a solver to check whether the answer follows from the given facts and rules.
 
-2. Tools installed
-I used Python and SWI-Prolog locally. Python handled the test runner, and SWI-Prolog acted as the symbolic reasoning engine.
+I used Python, SWI-Prolog, and Janus locally. SWI-Prolog acted as the symbolic reasoning engine, while Python acted as the test runner and result interpreter. Janus connected Python to SWI-Prolog so that my Python script could load a Prolog knowledge base, send queries, and read the result.
 
-3. What I implemented
-I reimplemented the core Logic-LM idea at a small scale. Instead of relying on the LLM for every translation step, I manually wrote the logic program from the natural language problem, then used Prolog to test whether the conclusion followed from the premises.
+For my reimplementation, I recreated the core Logic-LM idea at a smaller scale. Logic-LM’s full pipeline uses an LLM to translate natural language into a symbolic form, then uses a logic solver to reason over that symbolic form. In my version, I manually wrote the symbolic logic in Prolog, then used Python and Janus to test whether the conclusions followed from the knowledge base. This still follows the main structure of the paper: natural language question → symbolic query → solver result → interpreted answer.
 
-4. Test KB
-I tested the system on the Zelda KB:
-- sell_more_than_one_million_copies(legend_of_zelda).
-- top10_list(X) :- sell_more_than_one_million_copies(X).
+I tested my implementation using the same Prolog knowledge base from Task 4. The KB included facts about students, sports, which sports each student plays, and whether a sport is indoor or team-based. It also included rules such as `plays_indoor(X) :- plays(X, T), indoor(T).` and `busy_player(X) :- plays(X, Y), plays(X, Z), Y \= Z.` These rules allowed Prolog to infer new information instead of only checking direct facts.
 
-5. Test result
-The query top10_list(legend_of_zelda). returned true, which matches the expected answer. The conclusion is true because the KB contains a rule saying that any game that sells more than one million copies is selected into the Top 10 list.
+My Python test script loaded the Task 4 KB using Janus and ran queries such as `plays_indoor(sanya)`, `plays_indoor(bob)`, `busy_player(bob)`, and `busy_player(sam)`. The script compared each Prolog result to an expected answer and printed whether the test passed or failed. For example, `plays_indoor(sanya)` returned true because Sanya plays basketball and basketball is listed as an indoor sport. `busy_player(bob)` also returned true because Bob plays two different sports: soccer and baseball. On the other hand, `plays_indoor(bob)` returned false because Bob’s sports were not listed as indoor sports, and `busy_player(sam)` returned false because Sam only had one sport in the KB.
 
-6. What I learned
-The symbolic solver is reliable once the rules are written correctly. The main challenge is translating natural language into the right predicates, constants, and rules. Small typos, like writing legend_of_zelds instead of legend_of_zelda, break the reasoning even when the logic idea is correct.
+This helped me understand why symbolic reasoning is useful for LLM logic work. Once the facts and rules are written correctly, Prolog gives consistent answers based on the knowledge base instead of guessing. The main challenge is translating the original natural language into the right predicates, constants, and rules. Small mistakes in predicate names, file paths, or constants can break the reasoning even when the overall idea is correct.
 
-7. GitHub repo
-https://github.com/Sanyab8/AIEA-NeSy-Tasks
+GitHub repo: https://github.com/Sanyab8/AIEA-NeSy-Tasks
