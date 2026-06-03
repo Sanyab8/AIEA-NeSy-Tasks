@@ -2,7 +2,7 @@ import janus_swi as janus
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 
-janus.consult("../task4/kb.pl")
+janus.consult("tasks\\task4\\kb.pl")
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 

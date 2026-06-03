@@ -6,13 +6,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-janus.consult("../task4/kb.pl")
+janus.consult("tasks\\task4\\kb.pl")
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 
 def load_kb():
-    with open("task4/kb.pl", "r", encoding="utf-8") as file:
+    with open("tasks\\task4\\kb.pl", "r", encoding="utf-8") as file:
         return file.read()
 
 
@@ -49,9 +49,8 @@ def retrieve_context(state):
     if len(useful_lines) < 2:
         useful_lines = lines
 
-    return {
-        "context": "\n".join(useful_lines)
-    }
+    state["context"] = "\n".join(useful_lines)
+    return state
 
 
 relevance_prompt = ChatPromptTemplate.from_messages([
@@ -94,18 +93,15 @@ def judge_relevance(state):
     else:
         relevant = False
 
-    return {
-        "relevant": relevant
-    }
-
+    state["relevant"] = relevant
+    return state
 
 def refine_context(state):
     kb = load_kb()
 
-    return {
-        "context": kb,
-        "refined": True
-    }
+    state["context"] = kb
+    state["refined"] = True
+    return state
 
 
 def decide_after_relevance(state):
@@ -180,9 +176,8 @@ def generate_query(state):
     if query.endswith("."):
         query = query[:-1]
 
-    return {
-        "query": query
-    }
+    state["query"] = query
+    return state
 
 
 def ask_prolog_node(state):
@@ -200,9 +195,8 @@ def ask_prolog_node(state):
         print("Prolog error:", error)
         answer = False
 
-    return {
-        "answer": answer
-    }
+    state["answer"] = answer
+    return state
 
 
 def make_trace_node(state):
@@ -245,9 +239,8 @@ def make_trace_node(state):
 
     trace.append(f"Final Answer: {answer}")
 
-    return {
-        "trace": trace
-    }
+    state["trace"] = trace
+    return state
 
 
 graph = StateGraph(dict)
