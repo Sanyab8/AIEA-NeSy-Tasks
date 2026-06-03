@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-janus.consult("task4/kb.pl")
+janus.consult("../task4/kb.pl")
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
