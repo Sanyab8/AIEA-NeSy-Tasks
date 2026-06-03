@@ -1,0 +1,15 @@
+For this task, I built a simple logical inference engine that uses LangChain with a Prolog knowledge base. The main idea was to let someone ask a normal English question, have the language model translate that question into a Prolog query, and then use Prolog to decide whether the statement is true or false. I wanted the LLM to handle the language translation part, but I wanted Prolog to handle the actual reasoning.
+
+My knowledge base is based on students and sports. It includes facts about who is a student, which activities are sports, who plays which sport, and whether a sport is indoor or team-based. I also added rules such as `plays_indoor(X)`, `plays_team_sport(X)`, `busy_player(X)`, `student_athlete(X)`, and `plays_outdoor(X)`. These rules allow Prolog to infer answers instead of only checking facts directly. For example, if the knowledge base says that Sanya plays volleyball and volleyball is an indoor sport, then Prolog can infer that Sanya plays an indoor sport.
+
+On the Python side, I used `janus_swi` to connect Python with SWI-Prolog. The program first loads the Prolog knowledge base using `janus.consult(...)`. Then I used LangChain to create a prompt that tells the model to translate English questions into Prolog queries. I made the prompt strict by listing only the predicates that the model is allowed to use. This helped prevent the model from making up predicates that do not exist in my Prolog file.
+
+I used `ChatOpenAI` with `temperature=0` because I wanted the model to be consistent instead of creative. I connected the prompt to the model with `chain = prompt | llm`. Then I wrote a function called `english_to_prolog(question)`. This function sends the English question into the chain using `.invoke(...)`, gets the model’s response, strips extra spaces, removes a period at the end if the model adds one, and returns the cleaned Prolog query. After that, the query can be sent to Prolog through Janus.
+
+I tested the system with questions that checked both direct facts and inferred rules. For example, I tested “Does Sanya play an indoor sport?” and expected the model to produce `plays_indoor(sanya)`. I also tested “Does Bob play an indoor sport?”, “Is Bob a busy player?”, and “Does Sam play tennis?” These tests helped me check whether the system could translate English correctly and whether Prolog returned the expected true or false result.
+
+One issue I noticed was that the LLM sometimes added a period at the end of the Prolog query, like `plays_indoor(sanya).` Since I wanted to pass a cleaner query into Janus, I added a small check that removes the period if it appears. I also made the prompt say “Return only the Prolog query” so the model would not include explanations or extra text.
+
+Overall, this implementation shows how an LLM and a symbolic reasoning system can work together. LangChain and the LLM make the program easier to use because the user can ask questions in English. Prolog makes the reasoning more reliable because the final answer comes from the facts and rules in the knowledge base, not just from the model guessing.
+
+GitHub Repository: https://github.com/Sanyab8/AIEA-NeSy-Tasks

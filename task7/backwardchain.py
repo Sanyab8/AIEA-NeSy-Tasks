@@ -13,11 +13,9 @@ def match(pattern, fact, bindings=None):
     new_bindings = bindings.copy()
 
     for p, f in zip(pattern, fact):
-        # If p is already bound, use its value
         if is_var(p) and p in new_bindings:
             p = new_bindings[p]
 
-        # If f is already bound, use its value
         if is_var(f) and f in new_bindings:
             f = new_bindings[f]
 
@@ -48,13 +46,11 @@ def prove_options(goal, bindings=None):
     goal = fill(goal, bindings)
     results = []
 
-    # Try direct facts
     for fact in facts:
         new_bindings = match(goal, fact, bindings)
         if new_bindings is not None:
             results.append(new_bindings)
 
-    # Try rules
     for rule in rules:
         new_bindings = match(rule["head"], goal, bindings)
 
@@ -70,14 +66,12 @@ def prove_all(conditions, bindings):
     return len(prove_all_options(conditions, bindings)) > 0
 
 def prove_all_options(conditions, bindings):
-    # If there are no more conditions, this path worked
     if len(conditions) == 0:
         return [bindings]
 
     condition = fill(conditions[0], bindings)
     rest = conditions[1:]
 
-    # Special case for Y != Z
     if condition[0] == "not_equal":
         if condition[1] == condition[2]:
             return []
@@ -85,7 +79,6 @@ def prove_all_options(conditions, bindings):
 
     results = []
 
-    # Try every possible way to prove this condition
     for new_bindings in prove_options(condition, bindings):
         results.extend(prove_all_options(rest, new_bindings))
 
